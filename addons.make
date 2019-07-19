@@ -1,3 +1,4 @@
 ofxDatGui
+ofxFft
 ofxGpuParticles
 ofxXmlSettings

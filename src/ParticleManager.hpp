@@ -8,6 +8,7 @@
 #pragma once
 #include "ofMain.h"
 #include "ofxGpuParticles.h"
+#include "Attractor.hpp"
 
 class ParticleManager{
 public:
@@ -15,9 +16,15 @@ public:
     void setup(float _w, float _h);
     void update();
     void draw();
+    void drawDebug();
     
     void beginFrame(){fboFrame.begin(); ofClear(0, 0, 0, 0);}
     void endFrame(){fboFrame.end();}
+    
+    Attractor attractor;
+    ofVec3f gravity;
+    float dampening;
+    float homing;
 protected:
     void initShaders();
     float * makeFrameFloats(int _nChans=4);
@@ -31,8 +38,9 @@ protected:
     ofxGpuParticles ps;
     ofFbo fboFrame;
     ofFbo fboStartPos;
+    ofVec2f frameSz;
+    float rAttractor;
     string pthShaders120;
     string pthShaders330;
-    ofVec2f frameSz;
     bool bShaders;
 };

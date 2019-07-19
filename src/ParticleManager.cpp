@@ -9,6 +9,10 @@
 
 ParticleManager::ParticleManager(){
     bShaders = false;
+    attractor.set(ofVec3f(0,0,0), 200);
+    gravity.set(0,-0.5,0);
+    dampening = 0.995;
+    homing = 10;
     pthShaders120 = ofFilePath::join("shaders", "glsl120");
     pthShaders330 = ofFilePath::join("shaders", "glsl330");
     
@@ -89,11 +93,16 @@ void ParticleManager::update(){
 
 void ParticleManager::onPsUpdate(ofShader &_shd){
     _shd.setUniformTexture("texStartPos", fboStartPos.getTexture(), 2);
+    _shd.setUniform3fv("gravity", gravity.getPtr());
+    _shd.setUniform1f("attFrc", attractor.force);
+    _shd.setUniform1f("dampening", dampening);
+    _shd.setUniform1f("homing", homing);
     
     ofVec3f mouse(ofGetMouseX() - .5f * ofGetWidth(), .5f * ofGetHeight() - ofGetMouseY() , 0.f);
-    _shd.setUniform3fv("mouse", mouse.getPtr());
+    attractor.position = mouse;
+    _shd.setUniform3fv("attractor", attractor.position.getPtr());
     _shd.setUniform1f("elapsed", ofGetLastFrameTime());
-    _shd.setUniform1f("radiusSquared", 200.f * 200.f);
+    _shd.setUniform1f("radiusSquared", attractor.getRadiusSquared());
 }
 
 void ParticleManager::onPsDraw(ofShader &_shd){
@@ -102,4 +111,8 @@ void ParticleManager::onPsDraw(ofShader &_shd){
 
 void ParticleManager::draw(){
     ps.draw();
+}
+
+void ParticleManager::drawDebug(){
+    attractor.draw();
 }
