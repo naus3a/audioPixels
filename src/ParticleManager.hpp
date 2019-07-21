@@ -9,6 +9,7 @@
 #include "ofMain.h"
 #include "ofxGpuParticles.h"
 #include "Attractor.hpp"
+#include "Vec3Magnet.h"
 
 class ParticleManager{
 public:
@@ -22,6 +23,7 @@ public:
     void endFrame(){fboFrame.end();}
     
     Attractor attractor;
+    Vec3Magnet attractorMagnet;
     ofVec3f gravity;
     float dampening;
     float homing;
@@ -35,6 +37,7 @@ protected:
     void onPsUpdate(ofShader & _shd);
     void onPsDraw(ofShader & _shd);
     
+    ofSpherePrimitive mshBall;
     ofxGpuParticles ps;
     ofFbo fboFrame;
     ofFbo fboStartPos;

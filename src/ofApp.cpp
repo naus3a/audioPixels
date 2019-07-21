@@ -1,5 +1,4 @@
 #include "ofApp.h"
-
 //--------------------------------------------------------------
 void ofApp::setup(){
     ofBackground(0);
@@ -34,10 +33,26 @@ void ofApp::setupGui(){
     //sliAttRadius = new ofxDatGuiSlider("Attractor radius", 0,200, pm.attractor.getRadius());
     //sliAttRadius->onSliderEvent(this, &ofApp::onSliAttRadius);
     
+    sliFftMagStrX = new ofxDatGuiSlider("X strenght",0,1,pm.attractorMagnet.x.strength);
+    sliFftMagStrY = new ofxDatGuiSlider("Y strenght",0,1,pm.attractorMagnet.y.strength);
+    sliFftMagStrZ = new ofxDatGuiSlider("Z strenght",0,1,pm.attractorMagnet.z.strength);
+    sliFftMagStrX->onSliderEvent(this, &ofApp::onSliFftMagStrX);
+    sliFftMagStrY->onSliderEvent(this, &ofApp::onSliFftMagStrY);
+    sliFftMagStrZ->onSliderEvent(this, &ofApp::onSliFftMagStrZ);
+    
+    gui->addBreak();
+    gui->addLabel("particles");
     gui->attachItem(sliAttRadius);
     gui->attachItem(sliAttForce);
     gui->attachItem(sliHomForce);
     gui->attachItem(sliDamp);
+    gui->addBreak();
+    gui->addLabel("FFT magnet");
+    gui->attachItem(sliFftMagStrX);
+    gui->attachItem(sliFftMagStrY);
+    gui->attachItem(sliFftMagStrZ);
+    gui->addBreak();
+    gui->addLabel("FFT range");
     
     gui->setVisible(false);
 }
@@ -63,6 +78,8 @@ void ofApp::update(){
         vid.draw(0, 0, 1280, 720);
         pm.endFrame();
     }
+    pm.attractorMagnet.x.value = ai.fft.loudestBandToX();
+    pm.attractorMagnet.z.value = ai.fft.loudestBandValueToZ();
     pm.update();
 }
 

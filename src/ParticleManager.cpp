@@ -9,12 +9,16 @@
 
 ParticleManager::ParticleManager(){
     bShaders = false;
-    attractor.set(ofVec3f(0,0,0), 200);
+    attractor.set(ofVec3f(0,0,200), 200);
     gravity.set(0,-0.5,0);
     dampening = 0.995;
     homing = 10;
     pthShaders120 = ofFilePath::join("shaders", "glsl120");
     pthShaders330 = ofFilePath::join("shaders", "glsl330");
+    mshBall.set(50, 5);
+    
+    attractorMagnet.x.setAttracted(&attractor.position.x);
+    attractorMagnet.z.setAttracted(&attractor.position.z);
     
     initShaders();
 }
@@ -88,6 +92,7 @@ void ParticleManager::setup(float _w, float _h){
 }
 
 void ParticleManager::update(){
+    attractorMagnet.update();
     ps.update();
 }
 
@@ -98,8 +103,8 @@ void ParticleManager::onPsUpdate(ofShader &_shd){
     _shd.setUniform1f("dampening", dampening);
     _shd.setUniform1f("homing", homing);
     
-    ofVec3f mouse(ofGetMouseX() - .5f * ofGetWidth(), .5f * ofGetHeight() - ofGetMouseY() , 0.f);
-    attractor.position = mouse;
+    //ofVec3f mouse(ofGetMouseX() - .5f * ofGetWidth(), .5f * ofGetHeight() - ofGetMouseY() , 0.f);
+    //attractor.position = mouse;
     _shd.setUniform3fv("attractor", attractor.position.getPtr());
     _shd.setUniform1f("elapsed", ofGetLastFrameTime());
     _shd.setUniform1f("radiusSquared", attractor.getRadiusSquared());
@@ -115,4 +120,12 @@ void ParticleManager::draw(){
 
 void ParticleManager::drawDebug(){
     attractor.draw();
+    
+    ofPushStyle();
+    ofSetColor(ofColor::red);
+    ofPushMatrix();
+    ofTranslate(attractorMagnet.x.value, attractorMagnet.y.value, attractorMagnet.z.value);
+    mshBall.drawWireframe();
+    ofPopMatrix();
+    ofPopStyle();
 }

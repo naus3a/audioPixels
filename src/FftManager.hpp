@@ -7,13 +7,24 @@
 
 #pragma once
 #include "ofMain.h"
-#include "ofxProcessFFT.h"
+#include "Fft.hpp"
+#include "Vec3Range.hpp"
 
 class FftManager{
 public:
+    FftManager();
     void setup();
     void update();
     void draw();
+    
+    float getBandIdPct(int _bId);
+    float getNormalizedBand(int _bId);
+    float loudestBandToX();
+    float loudestBandValueToZ();
+    
+    Vec3Range range;
 protected:
-    ProcessFFT fft;
+    void drawBars();
+    
+    Fft fft;
 };

@@ -48,6 +48,6 @@ void AudioInput::update(){
 }
 
 void AudioInput::draw(){
-    volume.draw();
+    //volume.draw();
     fft.draw();
 }

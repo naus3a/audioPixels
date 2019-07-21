@@ -36,6 +36,9 @@ class ofApp : public ofBaseApp{
     void onSliHomForce(ofxDatGuiSliderEvent e){pm.homing = e.value;}
     void onSliDamp(ofxDatGuiSliderEvent e){pm.dampening = e.value;}
     void onSliGravity(ofxDatGuiSliderEvent e);
+    void onSliFftMagStrX(ofxDatGuiSliderEvent e){pm.attractorMagnet.x.strength=e.value;}
+    void onSliFftMagStrY(ofxDatGuiSliderEvent e){pm.attractorMagnet.y.strength=e.value;}
+    void onSliFftMagStrZ(ofxDatGuiSliderEvent e){pm.attractorMagnet.z.strength=e.value;}
     
     ofxDatGui * gui;
     ofxDatGuiSlider * sliAttRadius;
@@ -43,6 +46,10 @@ class ofApp : public ofBaseApp{
     ofxDatGuiSlider * sliHomForce;
     ofxDatGuiSlider * sliDamp;
     ofxDatGuiSlider * sliGravity;
+    ofxDatGuiSlider * sliFftMagStrX;
+    ofxDatGuiSlider * sliFftMagStrY;
+    ofxDatGuiSlider * sliFftMagStrZ;
+    
     
     //ProcessFFT fft;
     
