@@ -7,6 +7,7 @@
 
 #pragma once
 #include "ofMain.h"
+#include "ofxXmlSettings.h"
 
 class Attractor{
 public:
@@ -36,6 +37,25 @@ public:
     
     float getRadius(){return radius;}
     float getRadiusSquared(){return radiusSq;}
+    
+    void save(ofxXmlSettings & _xml){
+        _xml.addTag("attractor");
+        _xml.pushTag("attractor");
+        _xml.setValue("radius", radius);
+        _xml.setValue("force", force);
+        _xml.popTag();
+    }
+    
+    void load(ofxXmlSettings & _xml){
+        if(_xml.tagExists("attractor")){
+            _xml.pushTag("attractor");
+            radius = _xml.getValue("radius", radius);
+            force = _xml.getValue("force", force);
+            _xml.popTag();
+        }else{
+            ofLogError("Attractor::load","no attractor tag");
+        }
+    }
     
     ofVec3f position;
     float force;

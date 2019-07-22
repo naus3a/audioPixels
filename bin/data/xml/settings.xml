@@ -1,0 +1,22 @@
+<settings>
+    <particles>
+        <attractor>
+            <radius>200.000000000</radius>
+            <force>500.000000000</force>
+        </attractor>
+        <homing>10.000000000</homing>
+        <dampening>0.995000005</dampening>
+        <magnet>
+            <x>0.100000001</x>
+            <y>0.100000001</y>
+            <z>0.100000001</z>
+        </magnet>
+    </particles>
+    <audioin>
+        <range>
+            <x min="-640.000000000" max="640.000000000"></x>
+            <y min="-360.000000000" max="360.000000000"></y>
+            <z min="-200.000000000" max="200.000000000"></z>
+        </range>
+    </audioin>
+</settings>

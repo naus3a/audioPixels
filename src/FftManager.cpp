@@ -25,17 +25,16 @@ void FftManager::update(){
 
 void FftManager::draw(){
     drawBars();
+    
     ofPushMatrix();
-    ofTranslate(range.x.min, 0, 0);
     ofPushStyle();
     ofSetColor(ofColor::cyan);
-    ofSetLineWidth(2);
+    ofSetLineWidth(5);
+    ofTranslate(ofGetWidth()/2+range.x.min, ofGetHeight()/2);
     ofDrawLine(0, range.y.min, 0, range.y.max);
-    ofDrawLine(0, 0, range.z.min, 0, 0, range.z.max);
+    //ofDrawLine(0, 0, range.z.min, 0, 0, range.z.max);
     ofPopStyle();
     ofPopMatrix();
-    //fft.drawBars();
-    //fft.drawDebug();
 }
 
 void FftManager::drawBars(){

@@ -7,6 +7,7 @@
 
 #pragma once
 #include "FloatMagnet.h"
+#include "ofxXmlSettings.h"
 
 class Vec3Magnet{
 public:
@@ -17,6 +18,15 @@ public:
         x.update();
         y.update();
         z.update();
+    }
+    
+    void save(ofxXmlSettings & _xml){
+        _xml.addTag("magnet");
+        _xml.pushTag("magnet");
+        _xml.setValue("x",x.strength);
+        _xml.setValue("y",y.strength);
+        _xml.setValue("z",z.strength);
+        _xml.popTag();
     }
     
     FloatMagnet x;

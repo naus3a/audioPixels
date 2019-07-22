@@ -9,6 +9,7 @@
 #include "ofMain.h"
 #include "AudioVolume.hpp"
 #include "FftManager.hpp"
+#include "ofxXmlSettings.h"
 
 class AudioInput{
 public:
@@ -18,6 +19,9 @@ public:
     void audioIn(ofSoundBuffer & input);
     void update();
     void draw();
+    
+    void save(ofxXmlSettings & _xml);
+    void load(ofxXmlSettings & _xml);
     
     AudioVolume volume;
     FftManager fft;

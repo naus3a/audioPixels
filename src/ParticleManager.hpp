@@ -10,6 +10,7 @@
 #include "ofxGpuParticles.h"
 #include "Attractor.hpp"
 #include "Vec3Magnet.h"
+#include "ofxXmlSettings.h"
 
 class ParticleManager{
 public:
@@ -21,6 +22,9 @@ public:
     
     void beginFrame(){fboFrame.begin(); ofClear(0, 0, 0, 0);}
     void endFrame(){fboFrame.end();}
+    
+    void save(ofxXmlSettings & _xml);
+    void load(ofxXmlSettings & _xml);
     
     Attractor attractor;
     Vec3Magnet attractorMagnet;

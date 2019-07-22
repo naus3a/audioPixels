@@ -129,3 +129,25 @@ void ParticleManager::drawDebug(){
     ofPopMatrix();
     ofPopStyle();
 }
+
+void ParticleManager::save(ofxXmlSettings &_xml){
+    _xml.addTag("particles");
+    _xml.pushTag("particles");
+    attractor.save(_xml);
+    _xml.setValue("homing", homing);
+    _xml.setValue("dampening", dampening);
+    attractorMagnet.save(_xml);
+    _xml.popTag();
+}
+
+void ParticleManager::load(ofxXmlSettings &_xml){
+    if(_xml.tagExists("particles")){
+        _xml.pushTag("particles");
+        attractor.load(_xml);
+        homing = _xml.getValue("homing", homing);
+        dampening = _xml.getValue("dampening", dampening);
+        _xml.popTag();
+    }else{
+        ofLogError("ParticleManager::load", "no particles tag");
+    }
+}

@@ -51,3 +51,20 @@ void AudioInput::draw(){
     //volume.draw();
     fft.draw();
 }
+
+void AudioInput::save(ofxXmlSettings &_xml){
+    _xml.addTag("audioin");
+    _xml.pushTag("audioin");
+    fft.range.save(_xml);
+    _xml.popTag();
+}
+
+void AudioInput::load(ofxXmlSettings & _xml){
+    if(_xml.tagExists("audioin")){
+        _xml.pushTag("audioin");
+        fft.range.load(_xml);
+        _xml.popTag();
+    }else{
+        ofLogError("AudioInput::load","no audioin tag");
+    }
+}

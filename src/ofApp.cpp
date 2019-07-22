@@ -5,6 +5,7 @@ void ofApp::setup(){
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
     
+    pthXml = ofFilePath::join("xml","settings.xml");
     pm.setup(1280, 720);
     ai.setup();
     
@@ -17,6 +18,10 @@ void ofApp::setupGui(){
     bGui = false;
     
     gui = new ofxDatGui(ofxDatGuiAnchor::TOP_LEFT);
+    gui->onButtonEvent(this, &ofApp::onBut);
+    
+    butSave = new ofxDatGuiButton("save");
+    butLoad = new ofxDatGuiButton("load");
     
     sliAttRadius = new ofxDatGuiSlider("Attractor radius", 0,200, pm.attractor.getRadius());
     sliAttRadius->onSliderEvent(this, &ofApp::onSliAttRadius);
@@ -40,6 +45,22 @@ void ofApp::setupGui(){
     sliFftMagStrY->onSliderEvent(this, &ofApp::onSliFftMagStrY);
     sliFftMagStrZ->onSliderEvent(this, &ofApp::onSliFftMagStrZ);
     
+    sliFftRangeX = new ofxDatGuiSlider("Range X", 0, 1280, ai.fft.range.x.getRange());
+    sliFftRangeY = new ofxDatGuiSlider("Range Y", 0, 720, ai.fft.range.y.getRange());
+    sliFftRangeZ = new ofxDatGuiSlider("Range Z", 0, 720, ai.fft.range.z.getRange());
+    sliFftRangeX->onSliderEvent(this, &ofApp::onSliFftRangeX);
+    sliFftRangeY->onSliderEvent(this, &ofApp::onSliFftRangeY);
+    sliFftRangeZ->onSliderEvent(this, &ofApp::onSliFftRangeZ);
+    
+    sliFftCtrX = new ofxDatGuiSlider("Ctr X", -640, 640, 1);
+    sliFftCtrY = new ofxDatGuiSlider("Ctr Y", -360, 360, 1);
+    sliFftCtrZ = new ofxDatGuiSlider("Ctr Z", -360, 360, 1);
+    sliFftCtrX->onSliderEvent(this, &ofApp::onSliFftCtrX);
+    sliFftCtrY->onSliderEvent(this, &ofApp::onSliFftCtrY);
+    sliFftCtrZ->onSliderEvent(this, &ofApp::onSliFftCtrZ);
+    
+    gui->attachItem(butSave);
+    gui->attachItem(butLoad);
     gui->addBreak();
     gui->addLabel("particles");
     gui->attachItem(sliAttRadius);
@@ -53,20 +74,82 @@ void ofApp::setupGui(){
     gui->attachItem(sliFftMagStrZ);
     gui->addBreak();
     gui->addLabel("FFT range");
+    gui->attachItem(sliFftRangeX);
+    gui->attachItem(sliFftRangeY);
+    gui->attachItem(sliFftRangeZ);
+    gui->addLabel("FFT center");
+    gui->attachItem(sliFftCtrX);
+    gui->attachItem(sliFftCtrY);
+    gui->attachItem(sliFftCtrZ);
     
     gui->setVisible(false);
+    
+    load();
+}
+
+void ofApp::refreshGui(){
+    sliAttRadius->setValue(pm.attractor.getRadius());
+    sliAttForce->setValue(pm.attractor.force);
+    sliHomForce->setValue(pm.homing);
+    sliDamp->setValue(pm.dampening);
+    sliFftMagStrX->setValue(pm.attractorMagnet.x.strength);
+    sliFftMagStrY->setValue(pm.attractorMagnet.y.strength);
+    sliFftMagStrZ->setValue(pm.attractorMagnet.z.strength);
+    sliFftRangeX->setValue(ai.fft.range.x.getRange());
+    sliFftRangeY->setValue(ai.fft.range.y.getRange());
+    sliFftRangeZ->setValue(ai.fft.range.z.getRange());
+    sliFftCtrX->setValue(ai.fft.range.x.getCenter());
+    sliFftCtrY->setValue(ai.fft.range.y.getCenter());
+    sliFftCtrZ->setValue(ai.fft.range.z.getCenter());
+    
+}
+
+void ofApp::onBut(ofxDatGuiButtonEvent e){
+    if(e.target==butSave){
+        onButSave(e);
+    }else if(e.target==butLoad){
+        onButLoad(e);
+    }
 }
 
 void ofApp::showGui(){
     if(bGui)return;
     bGui = true;
     gui->setVisible(bGui);
+    refreshGui();
 }
 
 void ofApp::hideGui(){
     if(!bGui)return;
     bGui = false;
     gui->setVisible(bGui);
+}
+
+void ofApp::save(){
+    ofxXmlSettings xml;
+    xml.addTag("settings");
+    xml.pushTag("settings");
+    pm.save(xml);
+    ai.save(xml);
+    xml.popTag();
+    xml.save(pthXml);
+}
+
+void ofApp::load(){
+    ofxXmlSettings xml;
+    if(xml.load(pthXml)){
+        if(xml.tagExists("settings")){
+            xml.pushTag("settings");
+            pm.load(xml);
+            ai.load(xml);
+            xml.popTag();
+            refreshGui();
+        }else{
+            ofLogError("malformed xml: no settings tag");
+        }
+    }else{
+        ofLogError("cannot load "+pthXml);
+    }
 }
 
 //--------------------------------------------------------------
@@ -100,6 +183,12 @@ void ofApp::keyPressed(int key){
     switch(key){
         case 'g':
             toggleGui();
+            break;
+        case 's':
+            save();
+            break;
+        case 'l':
+            load();
             break;
         default:
             break;
