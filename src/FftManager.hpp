@@ -13,9 +13,11 @@
 class FftManager{
 public:
     FftManager();
-    void setup();
+    void setup(int _devId=0);
     void update();
     void draw();
+    
+    void setDeviceId(int _devId){fft.setDevId(_devId);}
     
     float getBandIdPct(int _bId);
     float getNormalizedBand(int _bId);

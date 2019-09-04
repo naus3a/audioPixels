@@ -15,8 +15,8 @@ FftManager::FftManager(){
     );
 }
 
-void FftManager::setup(){
-    fft.setup();
+void FftManager::setup(int _devId){
+    fft.setup();//(_devId);
 }
 
 void FftManager::update(){

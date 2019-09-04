@@ -9,6 +9,7 @@
 
 AudioInput::AudioInput(){
     devInName = "default";
+    devInId = 0;
     bSetup = false;
 }
 
@@ -32,7 +33,7 @@ bool AudioInput::setup(string _devInName, int _sampleRate, int _bufferSize){
     sss.setInListener(this);*/
     
     //sStream.setup(sss);
-    fft.setup();
+    fft.setup();//(devInId);
     volume.setup(bufSz);
     
     bSetup = true;
@@ -56,6 +57,7 @@ void AudioInput::save(ofxXmlSettings &_xml){
     _xml.addTag("audioin");
     _xml.pushTag("audioin");
     fft.range.save(_xml);
+    _xml.addValue("dev_id", devInId);
     _xml.popTag();
 }
 
@@ -63,6 +65,8 @@ void AudioInput::load(ofxXmlSettings & _xml){
     if(_xml.tagExists("audioin")){
         _xml.pushTag("audioin");
         fft.range.load(_xml);
+        devInId = _xml.getValue("dev_id", 0);
+        fft.setDeviceId(devInId);
         _xml.popTag();
     }else{
         ofLogError("AudioInput::load","no audioin tag");

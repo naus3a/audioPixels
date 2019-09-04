@@ -3,9 +3,12 @@
 #include "ofMain.h"
 #include "ParticleManager.hpp"
 #include "AudioInput.hpp"
+#include "FloatNoise.h"
 #include "ofxDatGui.h"
 #include "ofxProcessFFT.h"
 #include "ofxXmlSettings.h"
+
+//#define USE_WEBCAM
 
 class ofApp : public ofBaseApp{
 
@@ -26,6 +29,9 @@ class ofApp : public ofBaseApp{
 		void dragEvent(ofDragInfo dragInfo);
 		void gotMessage(ofMessage msg);
 
+    void makeAudioDevList();
+    void updateCameraMovement();
+    
     void save();
     void load();
     void refreshGui();
@@ -76,8 +82,16 @@ class ofApp : public ofBaseApp{
     
     ParticleManager pm;
     AudioInput ai;
+    FloatNoise noiseY;
     ofEasyCam cam;
+#ifdef USE_WEBCAM
     ofVideoGrabber vid;
+#else
+    ofVideoPlayer vid;
+#endif
+    ofVec3f rot;
+    ofVec3f rotSpd;
     string pthXml;
+    string audioDevices;
     bool bGui;
 };

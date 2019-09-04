@@ -2,3 +2,6 @@
 *.plist
 *.xcconfig
 bin/*.app
+bin/data/ofxbraitsch/*
+bin/data/ofxdatgui_assets/*
+bin/data/video/*

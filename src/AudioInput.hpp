@@ -29,6 +29,7 @@ protected:
     
     ofSoundStream sStream;
     string devInName;
+    int devInId;
     int sampRate;
     int bufSz;
     bool bSetup;

@@ -5,13 +5,42 @@ void ofApp::setup(){
     ofSetFrameRate(60);
     ofSetVerticalSync(true);
     
-    pthXml = ofFilePath::join("xml","settings.xml");
-    pm.setup(1280, 720);
-    ai.setup();
+    makeAudioDevList();
     
+#ifdef USE_WEBCAM
     vid.setup(1280, 720);
+#else
+    vid.load(ofFilePath::join("video", "video.mp4"));
+    vid.setLoopState(OF_LOOP_NORMAL);
+    vid.play();
+#endif
+    
+    pthXml = ofFilePath::join("xml","settings.xml");
+    pm.setup(vid.getWidth(), vid.getHeight());
+    ai.setup();
+    noiseY.range = &ai.fft.range.y;
+    
+    rot.set(0,0,0);
+    rotSpd.set(0.0001,0.005,0);
     
     setupGui();
+}
+
+void ofApp::makeAudioDevList(){
+    ofSoundStream sStream;
+    vector<ofSoundDevice> dd = sStream.getDeviceList();
+    audioDevices = "";
+    for(int i=0;i<dd.size();i++){
+        if(dd[i].inputChannels>0){
+            audioDevices+= ofToString(dd[i].deviceID);
+            audioDevices+=" - ";
+            audioDevices+=dd[i].name;
+            if(dd[i].isDefaultInput){
+                audioDevices+=" (DEFAULT INPUT)";
+            }
+            audioDevices+="\n";
+        }
+    }
 }
 
 void ofApp::setupGui(){
@@ -81,6 +110,7 @@ void ofApp::setupGui(){
     gui->attachItem(sliFftCtrX);
     gui->attachItem(sliFftCtrY);
     gui->attachItem(sliFftCtrZ);
+    gui->addLabel(audioDevices);
     
     gui->setVisible(false);
     
@@ -101,7 +131,6 @@ void ofApp::refreshGui(){
     sliFftCtrX->setValue(ai.fft.range.x.getCenter());
     sliFftCtrY->setValue(ai.fft.range.y.getCenter());
     sliFftCtrZ->setValue(ai.fft.range.z.getCenter());
-    
 }
 
 void ofApp::onBut(ofxDatGuiButtonEvent e){
@@ -158,21 +187,36 @@ void ofApp::update(){
     ai.update();
     if(vid.isFrameNew()){
         pm.beginFrame();
-        vid.draw(0, 0, 1280, 720);
+        vid.draw(0, vid.getHeight(), vid.getWidth(), -vid.getHeight());
         pm.endFrame();
     }
     pm.attractorMagnet.x.value = ai.fft.loudestBandToX();
+    pm.attractorMagnet.y.value = noiseY.update();
     pm.attractorMagnet.z.value = ai.fft.loudestBandValueToZ();
     pm.update();
+    
+    updateCameraMovement();
+}
+
+void ofApp::updateCameraMovement(){
+    rot+=rotSpd;
+    if(rot.x>=TWO_PI)rot.x = fmod(rot.x, TWO_PI);
+    if(rot.y>=TWO_PI)rot.y = fmod(rot.y, TWO_PI);;
+    if(rot.z>=TWO_PI)rot.z = fmod(rot.z, TWO_PI);;
 }
 
 //--------------------------------------------------------------
 void ofApp::draw(){
     cam.begin();
-    //ofEnableBlendMode(OF_BLENDMODE_ADD);
+    ofEnableBlendMode(OF_BLENDMODE_ADD);
+    ofPushMatrix();
+    ofRotateXRad((rot.x));
+    ofRotateYRad(cos(rot.y));
+    ofRotateZRad(sin(rot.z));
     pm.draw();
+    ofPopMatrix();
     if(bGui)pm.drawDebug();
-    //ofDisableBlendMode();
+    ofDisableBlendMode();
     //ofDrawBox(0, 0, 0, 100, 100, 100);
     cam.end();
     if(bGui)ai.draw();

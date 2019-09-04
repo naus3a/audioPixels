@@ -13,7 +13,7 @@ int main( ){
     ofCreateWindow(winSettings);
 #else
     ofAppGlutWindow win;
-    ofSetupOpenGL(&win, 1920, 1080, OF_WINDOW);
+    ofSetupOpenGL(&win, 1920, 1080, OF_FULLSCREEN);
 #endif
     ofRunApp(new ofApp());
 }

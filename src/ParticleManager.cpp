@@ -18,6 +18,7 @@ ParticleManager::ParticleManager(){
     mshBall.set(50, 5);
     
     attractorMagnet.x.setAttracted(&attractor.position.x);
+    attractorMagnet.y.setAttracted(&attractor.position.y);
     attractorMagnet.z.setAttracted(&attractor.position.z);
     
     initShaders();

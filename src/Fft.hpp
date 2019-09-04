@@ -10,6 +10,15 @@
 
 class Fft : public ProcessFFT{
 public:
+    //void setup(int _devId){
+    //    fft.stream.setDeviceID(_devId);
+    //    fft.setup();
+    //}
+    
+    void setDevId(int _devId){
+        fft.stream.setDeviceID(_devId);
+    }
+    
     vector<float> & getSpectrumRef(){return fftSpectrum;}
     float getVolumeRange(){return volumeRange;}
     int getLoudestBandId(){return loudestBand;}
